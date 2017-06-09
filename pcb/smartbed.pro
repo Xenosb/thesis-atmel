@@ -1,4 +1,4 @@
-update=Sri 07 Lip 2017 16:12:18
+update=Pet 09 Lip 2017 12:23:39
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=
+LibDir=../../downloads/kicad-library/library
 [eeschema/libraries]
 LibName1=smartbed
 LibName2=power
@@ -59,3 +59,4 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
+LibName31=switches
