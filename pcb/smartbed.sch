@@ -1229,29 +1229,29 @@ Text GLabel 8450 6550 3    60   BiDi ~ 0
 PA11
 Text GLabel 8350 6550 3    60   BiDi ~ 0
 PA10
-Text GLabel 13850 7500 0    60   BiDi ~ 0
-PB31
-Text GLabel 13850 7600 0    60   BiDi ~ 0
-PB23
-Text GLabel 13850 7700 0    60   BiDi ~ 0
-PB22
-Text GLabel 13850 7900 0    60   BiDi ~ 0
-PA22
-Text GLabel 13850 7800 0    60   BiDi ~ 0
-PA23
-Text GLabel 13850 8100 0    60   BiDi ~ 0
-PA21
 Text GLabel 13850 8000 0    60   BiDi ~ 0
-PA20
-Text GLabel 14700 7400 2    60   BiDi ~ 0
-PB17
-Text GLabel 14700 7500 2    60   BiDi ~ 0
-PB16
-Text GLabel 14700 7600 2    60   BiDi ~ 0
-PA19
-Text GLabel 14700 7700 2    60   BiDi ~ 0
-PA18
+PB31
+Text GLabel 14700 7900 2    60   BiDi ~ 0
+PB23
+Text GLabel 13850 7900 0    60   BiDi ~ 0
+PB22
+Text GLabel 13850 7800 0    60   BiDi ~ 0
+PA22
 Text GLabel 14700 7800 2    60   BiDi ~ 0
+PA23
+Text GLabel 14700 7700 2    60   BiDi ~ 0
+PA21
+Text GLabel 13850 7700 0    60   BiDi ~ 0
+PA20
+Text GLabel 14700 7600 2    60   BiDi ~ 0
+PB17
+Text GLabel 13850 7600 0    60   BiDi ~ 0
+PB16
+Text GLabel 14700 7500 2    60   BiDi ~ 0
+PA19
+Text GLabel 13850 7500 0    60   BiDi ~ 0
+PA18
+Text GLabel 14700 7400 2    60   BiDi ~ 0
 PA17
 $Comp
 L CONN_02X08 J5
@@ -1351,8 +1351,6 @@ Wire Wire Line
 Wire Wire Line
 	14800 9300 14550 9300
 Wire Wire Line
-	14050 8100 13850 8100
-Wire Wire Line
 	13850 8000 14050 8000
 Wire Wire Line
 	14050 7700 13850 7700
@@ -1372,8 +1370,6 @@ Wire Wire Line
 	14700 7800 14550 7800
 Wire Wire Line
 	14550 7900 14700 7900
-Wire Wire Line
-	14700 8000 14550 8000
 Wire Wire Line
 	8350 6350 8350 6550
 Wire Wire Line
@@ -1859,10 +1855,6 @@ Wire Wire Line
 	14050 7800 13850 7800
 Wire Wire Line
 	14050 7900 13850 7900
-Text GLabel 14700 7900 2    60   Input ~ 0
-SENSE_IN
-Text GLabel 14700 8000 2    60   Output ~ 0
-SENSE_OUT
 Text GLabel 9550 6900 3    60   Input ~ 0
 VBUS
 Wire Wire Line
