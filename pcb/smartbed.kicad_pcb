@@ -3,9 +3,9 @@
   (general
     (links 179)
     (no_connects 0)
-    (area 0 0 0 0)
+    (area 106.949999 46.949999 205.050001 103.050001)
     (thickness 1.6)
-    (drawings 0)
+    (drawings 6)
     (tracks 815)
     (zones 0)
     (modules 53)
@@ -48,7 +48,7 @@
     (zone_45_only no)
     (trace_min 0.2)
     (segment_width 0.2)
-    (edge_width 0.15)
+    (edge_width 0.1)
     (via_size 1)
     (via_drill 0.9)
     (via_min_size 0.6)
@@ -2774,6 +2774,13 @@
       (net 5 RESET))
   )
 
+  (gr_circle (center 182 85) (end 185 86) (layer Edge.Cuts) (width 0.1))
+  (gr_circle (center 128 64) (end 125 64) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 205 47) (end 107 47) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 205 103) (end 205 47) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 107 103) (end 205 103) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 107 47) (end 107 103) (angle 90) (layer Edge.Cuts) (width 0.1))
+
   (segment (start 160.9 66.35) (end 159.5 66.35) (width 0.4) (layer F.Cu) (net 1))
   (segment (start 160.5 72.05) (end 160.5 70.11) (width 0.2) (layer F.Cu) (net 1))
   (segment (start 161.6 67.05) (end 160.9 66.35) (width 0.2) (layer F.Cu) (net 1) (tstamp 593FC0BA))
@@ -3590,14 +3597,4 @@
   (segment (start 147.15 68.2) (end 147.15 69.6) (width 0.4) (layer F.Cu) (net 67))
   (segment (start 147.15 69.6) (end 147.6 69.6) (width 0.15) (layer F.Cu) (net 67))
 
-  (zone (net 1) (net_name GND) (layer F.Cu) (tstamp 593FC1D0) (hatch edge 0.508)
-    (connect_pads (clearance 0.508))
-    (min_thickness 0.254)
-    (fill (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
-    (polygon
-      (pts
-        (xy 163 47.5) (xy 141.5 47.5) (xy 121 47.5) (xy 122 47.5) (xy 123.5 47.5)
-      )
-    )
-  )
 )
