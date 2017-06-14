@@ -21,4 +21,4 @@ _autosave-*
 *.csv
 
 # Gerber files and other fabrication files
-/fabrication
+pcb/fabrication
