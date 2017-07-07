@@ -144,9 +144,9 @@ Current setup involves using J-Link EDU and uploading using JLinkExe. Plan is to
 
 1. Connect PCB and J-Link. If you don't have J-Link to Cortex debug connetctor breakout, use "breadboard" dupont cables.
 
-![J-Link pinout](https://github.com/Xenosb/thesis-atmel/firmware/images/conjtag.png "J-Link pinout")
+![J-Link pinout](https://raw.githubusercontent.com/Xenosb/thesis-atmel/master/firmware/images/conjtag.png "J-Link pinout")
 
-![Pinout on the PCB](https://github.com/Xenosb/thesis-atmel/firmware/images/conpng.png "Pinout on the PCB")
+![Pinout on the PCB](https://raw.githubusercontent.com/Xenosb/thesis-atmel/master/firmware/images/conpcb.png "Pinout on the PCB")
 
 2. Download and install [J-Link](https://www.segger.com/downloads/jlink) from Segger.
 3. Start the J-Link commander and connect to the board.
