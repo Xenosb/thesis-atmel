@@ -1,6 +1,5 @@
 #include "mbed.h"
-
-#define EDISON_ADR 0x0a
+#include "main.hpp"
 
 I2CSlave slave(PA08, PA09);
 
@@ -24,12 +23,6 @@ AnalogIn FSR14(PB04);
 AnalogIn FSR15(PB05);
 
 float sensors[16] = {};
-
-int i = 0;
-char data[4] = {0x0c, 0x0f, 0x50, 0xf5};
-
-char buf[10];
-char msg[] = "Slave!";
 
 /**
 =========================
@@ -66,11 +59,11 @@ void sensors_print()
 {
   printf("\n\r");
 
-  for (i=0;i<16;i++)
+  for (int i=0;i<16;i++)
     printf("%d\t", i);
   printf("\n\r");
 
-  for (i=0;i<16;i++)
+  for (int i=0;i<16;i++)
     printf("%.2f\t", sensors[i]);
   printf("\n\r");
 }
@@ -82,43 +75,33 @@ I2C slave respond register
 ==========================
 **/
 void i2c_slave() {
-  int i = slave.receive();
-  
-  switch (i) {
-      case I2CSlave::ReadAddressed:
-          slave.write(0x11);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          break;
-      case I2CSlave::WriteGeneral:
-          slave.write(0x12);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          wait_ms(300);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          break;
-      case I2CSlave::WriteAddressed:
-          slave.write(0x13);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          wait_ms(300);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          wait_ms(300);
-          myled = 0;
-          wait_ms(300);
-          myled = 1;
-          break;
-  }
 
-  for(int i = 0; i < 10; i++) buf[i] = 0;
-  slave.stop();
+  I2C_BYTE node_address = I2C_BYTE(slave.read());
+
+  if (node_address.data == -1) {
+    wait_ms(1);
+  } else if (node_address.addr == NODE_ADR) {
+    Timer t;
+    t.start();
+    I2C_BYTE node_register = I2C_BYTE(slave.read());
+    I2C_BYTE read_write = I2C_BYTE(slave.read());
+    if (read_write.n_write && read_write.addr == NODE_ADR) {
+      // read dummy data
+      slave.write(0x1a);
+    } else {
+      // write dummy data
+      slave.read();
+      myled = !myled;
+    }
+    t.stop();
+    printf("%fms\n", t.read()*1000);
+  } else if (node_address.addr == 0x7f) {
+    // broadcast
+    slave.read();
+    myled = !myled;
+    wait_ms(100);
+    myled = !myled;
+  }
 }
 
 
@@ -132,8 +115,8 @@ int main()
 
   myled = 1;
 
-  slave.frequency(100000);
-  slave.address(0x10);
+  slave.frequency(I2C_FREQ);
+  slave.address(NODE_ADR);
 
   while (1)
   {
