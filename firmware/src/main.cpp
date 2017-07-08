@@ -81,8 +81,6 @@ void i2c_slave() {
   if (node_address.data == -1) {
     wait_ms(1);
   } else if (node_address.addr == NODE_ADR) {
-    Timer t;
-    t.start();
     I2C_BYTE node_register = I2C_BYTE(slave.read());
     I2C_BYTE read_write = I2C_BYTE(slave.read());
     if (read_write.n_write && read_write.addr == NODE_ADR) {
@@ -93,9 +91,7 @@ void i2c_slave() {
       slave.read();
       myled = !myled;
     }
-    t.stop();
-    printf("%fms\n", t.read()*1000);
-  } else if (node_address.addr == 0x7f) {
+  } else if (node_address.addr == 0x00) {
     // broadcast
     slave.read();
     myled = !myled;

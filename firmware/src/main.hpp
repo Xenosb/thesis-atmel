@@ -1,6 +1,6 @@
 #define I2C_FREQ 100000
 #define EDISON_ADR 0x0a
-#define NODE_ADR 0x08
+#define NODE_ADR 0x06
 
 class I2C_BYTE {
   public:
