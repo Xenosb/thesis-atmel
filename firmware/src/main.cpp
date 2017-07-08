@@ -1,6 +1,6 @@
 #include "mbed.h"
 
-#define EDISON_ADR 0x80
+#define EDISON_ADR 0x0a
 
 I2CSlave slave(PA08, PA09);
 
@@ -86,15 +86,34 @@ void i2c_slave() {
   
   switch (i) {
       case I2CSlave::ReadAddressed:
-          slave.write(msg, strlen(msg) + 1);
+          slave.write(0x11);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
           break;
       case I2CSlave::WriteGeneral:
-          slave.read(buf, 10);
-          printf("Read G: %s\n", buf);
+          slave.write(0x12);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
+          wait_ms(300);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
           break;
       case I2CSlave::WriteAddressed:
-          slave.read(buf, 10);
-          printf("Read A: %s\n", buf);
+          slave.write(0x13);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
+          wait_ms(300);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
+          wait_ms(300);
+          myled = 0;
+          wait_ms(300);
+          myled = 1;
           break;
   }
 
@@ -113,19 +132,20 @@ int main()
 
   myled = 1;
 
-  //slave.frequency(100000);
-  //slave.address(0x0a);
+  slave.frequency(100000);
+  slave.address(0x10);
 
   while (1)
   {
     
-    sensors_read();
+    //sensors_read();
     //sensors_print();
 
     i2c_slave();
 
-    myled = (myled + 1) % 2;
+    //myled.write(sensors[15]>0.3);
 
-    wait(0.2);
+    //myled = (myled + 1) % 2;
+    //wait_ms(300);
   }
 }
