@@ -29,7 +29,8 @@ public:
   I2C_MSG_T type;
   int reg;
   int data_length;
-  uint8_t *data;
+  int reg_value;
+  int *long_data;
 
   I2C_RESULT()
   {
@@ -42,19 +43,18 @@ public:
     this->reg = reg;
   }
 
-  I2C_RESULT(int data_length, uint8_t *data)
+  I2C_RESULT(int data_length, int long_data[])
   {
     this->type = WriteBroadcasted;
     this->data_length = data_length;
-    this->data = data;
+    this->long_data = long_data;
   }
 
-  I2C_RESULT(int reg, int data_length, uint8_t *data)
+  I2C_RESULT(int reg, int reg_value)
   {
     this->type = WriteAddressed;
     this->reg = reg;
-    this->data_length = data_length;
-    this->data = data;
+    this->reg_value = reg_value;
   }
 };
 
@@ -98,9 +98,9 @@ private:
   int32_t active_sensors; // Max sensors is 32
 
 public:
-  Smartbed(int sensor_number)
+  Smartbed(int address, int sensor_number)
   {
-    this->address = 0x7f;
+    this->address = address;
     this->sensor_number = sensor_number;
     this->active_sensors = 0;
   }

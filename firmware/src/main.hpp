@@ -1,4 +1,5 @@
-#define MAIN
+#define HW_VER 1
+#define SW_VER 1
 
 #include "mbed.h"
 #include "Smartbed.hpp"
