@@ -94,17 +94,47 @@ class Smartbed
 {
 private:
   uint8_t address;
+  int sensor_number;
+  int32_t active_sensors; // Max sensors is 32
 
 public:
-  Smartbed() {
+  Smartbed(int sensor_number)
+  {
     this->address = 0x7f;
+    this->sensor_number = sensor_number;
+    this->active_sensors = 0;
   }
 
-  void set_address(uint8_t address) {
+  void set_address(uint8_t address)
+  {
     this->address = address;
   }
 
-  uint8_t get_address() {
+  uint8_t get_address()
+  {
     return this->address;
   }
+
+  void set_sensor_active(int sensor_number, int active)
+  {
+    if (active)
+    {
+      this->active_sensors |= 1<<sensor_number;
+    }
+    else
+    {
+      this->active_sensors &= ~(1<<sensor_number);
+    }
+  }
+
+  int get_sensor_active(int sensor_number)
+  {
+    return ((this->active_sensors & 1<<sensor_number) != 0);
+  }
+
+  int get_sensor_number()
+  {
+    return this->sensor_number;
+  }
+
 };
