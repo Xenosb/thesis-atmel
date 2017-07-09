@@ -1,9 +1,8 @@
-#include "mbed.h"
 #include "main.hpp"
 
 I2CSlave slave(PA08, PA09);
 
-DigitalOut myled(PB30);
+DigitalOut led(PB30);
 
 AnalogIn FSR0(PB06);
 AnalogIn FSR1(PB07);
@@ -74,30 +73,59 @@ void sensors_print()
 I2C slave respond register
 ==========================
 **/
-void i2c_slave() {
+I2C_RESULT i2c_slave() {
 
   I2C_BYTE node_address = I2C_BYTE(slave.read());
 
+  /* This slave was not addressed */
   if (node_address.data == -1) {
-    wait_ms(1);
-  } else if (node_address.addr == NODE_ADR) {
-    I2C_BYTE node_register = I2C_BYTE(slave.read());
-    I2C_BYTE read_write = I2C_BYTE(slave.read());
-    if (read_write.n_write && read_write.addr == NODE_ADR) {
-      // read dummy data
-      slave.write(0x1a);
-    } else {
-      // write dummy data
-      slave.read();
-      myled = !myled;
-    }
-  } else if (node_address.addr == 0x00) {
-    // broadcast
-    slave.read();
-    myled = !myled;
-    wait_ms(100);
-    myled = !myled;
+    return I2C_RESULT();
   }
+  
+  /* This slave was addressed */
+  if (node_address.addr == NODE_ADR) {
+
+    int node_register = slave.read();
+    I2C_BYTE read_write = I2C_BYTE(slave.read());
+
+    if (read_write.n_write && read_write.addr == NODE_ADR) {
+      /* Master requests read from registry */
+      slave.write(0x1a);
+      return I2C_RESULT(node_register);
+
+    } else {
+      /* Master wrote to slave registry */
+      int data = slave.read();
+      uint8_t data_array[1] = {(uint8_t)data};
+      led = !led;
+      return I2C_RESULT(node_register, data_array);
+    }
+
+  }
+  
+  if (node_address.addr == 0x00) {
+    /* Broadcast to all slaves */
+    uint8_t data[MAX_I2C_DATA_SIZE];
+    int length = 0;
+
+    while (true) {
+      int r_byte = slave.read();
+      if (r_byte == -1)
+        break;
+      data[length] = (uint8_t)r_byte;
+      length++;
+    }
+
+    if (data[0]==0x33 && data[1]==0x44 && data[2]==0x55) {
+      led = !led;
+      wait_ms(100);
+      led = !led;
+    }
+
+    return I2C_RESULT(length, data);
+  }
+
+  return I2C_RESULT();
 }
 
 
@@ -109,7 +137,7 @@ Main loop function
 int main()
 {
 
-  myled = 1;
+  led = 1;
 
   slave.frequency(I2C_FREQ);
   slave.address(NODE_ADR);
