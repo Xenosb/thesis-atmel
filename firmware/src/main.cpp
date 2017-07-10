@@ -4,8 +4,9 @@ I2CSlave slave(I2C_SDA_PIN, I2C_SCL_PIN);
 DigitalOut led(LED_PIN);
 DigitalIn sense_in(SENSE_IN_PIN);
 DigitalOut sense_out(SENSE_OUT_PIN);
-Sensors sensors();
 Smartbed smartbed(NODE_ADR, SENSOR_NUMBER);
+Sensors sensors;
+Ticker sensor_updater;
 
 /**
 ==================
@@ -24,11 +25,18 @@ int main()
 
   I2C_RESULT i2c_data;
 
+  sensor_updater.attach(&update_all_sensors, 0.1);
+
   while (1)
   {
     i2c_data = i2c_slave_worker(slave);
     process_i2c_call(i2c_data);
   }
+}
+
+void update_all_sensors()
+{
+  sensors.update_all_sensors();
 }
 
 /**
@@ -69,7 +77,7 @@ void process_write(I2C_RESULT i2c_data)
   {
   case 0xfa: // TESTED WORKING
     smartbed.set_address(i2c_data.reg_value);
-    slave.address(0x05);
+    slave.address(i2c_data.reg_value);
     break;
   case 0xf0: // TESTED WORKING
     sense_out.write(i2c_data.reg_value);
@@ -77,6 +85,7 @@ void process_write(I2C_RESULT i2c_data)
   default:
     return;
   }
+  slave.stop();
 }
 
 /**
@@ -84,19 +93,28 @@ void process_write(I2C_RESULT i2c_data)
 Process read actions to node
 
 registers
-0x00 ... 0x10 - sensors
-0xfa          - i2c address
-0xfb          - number of active sensors
-0xfc          - board revision
-0xfd          - firmware version
+0x00 ... 0x0f - sensors individually (2B)
+0xe0          - all sensors [] (32B)
+0xfa          - i2c address (1B)
+0xfb          - number of active sensors (1B)
+0xfc          - board revision (1B)
+0xfd          - firmware version (1B)
 ========================================
 **/
 void process_read(I2C_RESULT i2c_data)
 {
+  int i;
+  uint16_t sensor_value;
+
   switch (i2c_data.reg)
   {
-  case 0 ... 16:
-    slave.write(1);
+  case 0 ... 15:
+    sensor_value = sensors.get_sensor(i2c_data.reg);    
+    slave.write(sensor_value & 0x00ff);
+    slave.write(sensor_value >> 8);
+    break;
+  case 0xe0:
+    slave.write(SW_VER);
     break;
   case 0xfa:
     slave.write(smartbed.get_address());
@@ -114,6 +132,7 @@ void process_read(I2C_RESULT i2c_data)
     slave.write(0xab);
     return;
   }
+  slave.stop();
 }
 
 /**
@@ -148,16 +167,14 @@ I2C_RESULT i2c_slave_worker(I2CSlave slave)
     return I2C_RESULT();
   }
 
-  /* This slave was addressed */
-  if (node_address.addr == smartbed.get_address())
+  /* This slave was addressed with write */
+  if (node_address.addr == smartbed.get_address() && !node_address.n_write)
   {
 
     int node_register = slave.read();
-    int read_write = slave.read();
-    int n_write = read_write & 0x01;
-    int addr = (read_write & 0xff) >> 1;
+    I2C_BYTE read_write = I2C_BYTE(slave.read());
 
-    if (n_write && addr == NODE_ADR)
+    if (read_write.n_write && read_write.addr == smartbed.get_address())
     {
       /* Master requests read from registry */
       return I2C_RESULT(node_register);
@@ -165,7 +182,7 @@ I2C_RESULT i2c_slave_worker(I2CSlave slave)
     else
     {
       /* Master wrote to slave registry */
-      return I2C_RESULT(node_register, read_write);
+      return I2C_RESULT(node_register, read_write.data);
     }
   }
 

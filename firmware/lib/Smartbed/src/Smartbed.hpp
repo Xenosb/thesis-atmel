@@ -64,16 +64,24 @@ private:
   AnalogIn FSR[16] = {
       PB06, PB07, PB08, PB09, PA04, PA05, PA06, PA07,
       PB00, PB01, PB02, PB03, PA02, PA03, PB04, PB05};
-  float sensor_values[16];
+  uint16_t sensor_values[16];
 
 public:
-  float *get_all_sensors()
+  void update_all_sensors()
   {
-    for (int i = 0; i < 16; i++)
-    {
-      sensor_values[i] = FSR[i].read();
+    for (int i=0; i<16; i++) {
+      sensor_values[i] = FSR[i].read_u16();
     }
+  }
+
+  uint16_t *get_all_sensors()
+  {
     return sensor_values;
+  }
+
+  uint16_t get_sensor(int n)
+  {
+    return sensor_values[n];
   }
 
   void print_all_sensors()

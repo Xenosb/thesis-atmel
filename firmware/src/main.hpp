@@ -8,7 +8,7 @@
 #define MAX_I2C_DATA_SIZE 100
 
 #define EDISON_ADR 0x0a
-#define NODE_ADR 0x06
+#define NODE_ADR 0x10
 
 #define I2C_SDA_PIN PA08
 #define I2C_SCL_PIN PA09
@@ -23,4 +23,5 @@ void process_i2c_call(I2C_RESULT i2c_data);
 void process_read(I2C_RESULT i2c_data);
 void process_write(I2C_RESULT i2c_data);
 void process_broadcast(I2C_RESULT i2c_data);
+void update_all_sensors();
 int main();
