@@ -94,11 +94,12 @@ Process read actions to node
 
 registers
 0x00 ... 0x0f - sensors individually (2B)
-0xe0          - all sensors [] (32B)
+0xa0          - all sensors (sensor_n*2B)
 0xfa          - i2c address (1B)
 0xfb          - number of active sensors (1B)
 0xfc          - board revision (1B)
 0xfd          - firmware version (1B)
+default       - echo 0xab == 17 (1B)
 ========================================
 **/
 void process_read(I2C_RESULT i2c_data)
@@ -109,12 +110,17 @@ void process_read(I2C_RESULT i2c_data)
   switch (i2c_data.reg)
   {
   case 0 ... 15:
-    sensor_value = sensors.get_sensor(i2c_data.reg);    
+    sensor_value = sensors.get_sensor(i2c_data.reg);
     slave.write(sensor_value & 0x00ff);
     slave.write(sensor_value >> 8);
     break;
-  case 0xe0:
-    slave.write(SW_VER);
+  case 0xa0:
+    for (i=0; i<SENSOR_NUMBER; i++)
+    {
+      sensor_value = sensors.get_sensor(i);
+      slave.write(sensor_value & 0x00ff);
+      slave.write(sensor_value >> 8);
+    }
     break;
   case 0xfa:
     slave.write(smartbed.get_address());
@@ -128,7 +134,7 @@ void process_read(I2C_RESULT i2c_data)
   case 0xfd:
     slave.write(SW_VER);
     break;
-  default: // echo
+  default:
     slave.write(0xab);
     return;
   }
