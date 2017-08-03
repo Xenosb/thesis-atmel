@@ -3,3 +3,4 @@
 .vscode
 .travis.yml
 /lib/readme.txt
+.vscode/c_cpp_properties.json
