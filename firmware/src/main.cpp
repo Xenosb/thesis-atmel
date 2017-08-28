@@ -54,6 +54,7 @@ void process_i2c_call(I2C_RESULT i2c_data)
     process_write(i2c_data);
     break;
   case I2C_RESULT::ReadAddressed:
+    // led = !led;
     process_read(i2c_data);
     break;
   case I2C_RESULT::WriteBroadcasted:
@@ -75,11 +76,13 @@ void process_write(I2C_RESULT i2c_data)
 {
   switch (i2c_data.reg)
   {
-  case 0xfa: // TESTED WORKING
-    smartbed.set_address(i2c_data.reg_value);
-    slave.address(i2c_data.reg_value);
+  case 0xfa:
+    if (sense_in) {
+      smartbed.set_address(i2c_data.reg_value);
+      slave.address(i2c_data.reg_value);
+    }
     break;
-  case 0xf0: // TESTED WORKING
+  case 0xf0:
     sense_out.write(i2c_data.reg_value);
     break;
   default:
@@ -106,24 +109,30 @@ void process_read(I2C_RESULT i2c_data)
 {
   int i;
   uint16_t sensor_value;
+  char sensor_vals[2];
 
   switch (i2c_data.reg)
   {
   case 0 ... 15:
     sensor_value = sensors.get_sensor(i2c_data.reg);
-    slave.write(sensor_value & 0x00ff);
-    slave.write(sensor_value >> 8);
+    sensor_vals[0] = char(sensor_value & 0x00ff);
+    sensor_vals[1] = char(sensor_value >> 8);
+    slave.write(sensor_vals, 2);
     break;
   case 0xa0:
     for (i=0; i<SENSOR_NUMBER; i++)
     {
       sensor_value = sensors.get_sensor(i);
-      slave.write(sensor_value & 0x00ff);
-      slave.write(sensor_value >> 8);
+      sensor_vals[0] = char(sensor_value & 0x00ff);
+      sensor_vals[1] = char(sensor_value >> 8);
+      slave.write(sensor_vals, 2);
     }
     break;
   case 0xfa:
+    led != led;
     slave.write(smartbed.get_address());
+    if (smartbed.get_address() == NODE_ADR)
+      led = !led;
     break;
   case 0xfb:
     slave.write(smartbed.get_sensor_number());
