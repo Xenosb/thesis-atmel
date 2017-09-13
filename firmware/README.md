@@ -75,10 +75,10 @@ mkdir ~/.platformio/boards
 ```
 ### Adding a custom mbed board
 
-1. Open ```~/.platformio/platforms/atmelsam/builder/frameworks/mbed/mbed.py```
-2. Add board to ```MBED_VARIANTS``` dictionary so that it looks like this:
+1. Open ```~/.platformio/packages/framework-mbed/platformio/variants_remap.json```
+2. Add board to dictionary so that it looks like this:
 ```python
-MBED_VARIANTS = {
+{
     "blueboard_lpc11u24": "LPC11U24",
     "dipcortexm0": "LPC11U24",
     "seeedArchPro": "ARCH_PRO",
